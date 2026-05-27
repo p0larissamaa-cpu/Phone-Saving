@@ -474,14 +474,7 @@ ctx.stroke();
   ctx.strokeStyle = 'rgba(255,120,140,0.12)';
   ctx.stroke();
 
-  ctx.fillStyle = 'rgba(255,255,255,0.55)';
-  ctx.font = '20px DejaVuSans';
 
-  ctx.fillText(
-    'Use /add to log a deposit   •   /set to adjust values   •   /progress to display',
-    85,
-    H - 36
-  );
 
   return canvas.toBuffer('image/png');
 }
