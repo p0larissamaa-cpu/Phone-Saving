@@ -153,10 +153,10 @@ ctx.fillText(
 
 ctx.drawImage(
   phone,
-  930,
-  -5,
-  380,
-  380
+  1010,
+  40,
+  360,
+  360
 );
 
   ctx.restore();
