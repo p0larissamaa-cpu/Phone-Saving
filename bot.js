@@ -123,7 +123,7 @@ async function buildCard(saved, target, log) {
 
   // ── TOP HEADER ─────────────────────────────
 
-  roundRect(ctx, 50, 50, W - 100, 150, 22);
+  roundRect(ctx, 50, 50, W - 100, 125, 22);
 
   const topGrad = ctx.createLinearGradient(0, 0, W, 0);
 
@@ -137,21 +137,10 @@ async function buildCard(saved, target, log) {
 ctx.font = 'bold 60px DejaVuSans';
 
 ctx.fillText(
-  'Google Pixel 10a Savings Goal',
+  'Google Pixel 10a',
   70,
-  110
+  120
 );
-
-ctx.fillStyle = 'rgba(255,255,255,0.72)';
-ctx.font = '32px DejaVuSans';
-
-ctx.fillText(
-  'Track every rupee you save',
-  72,
-  160
-);
-
-
 
   // ── PHONE ──────────────────────────────────
 
@@ -162,13 +151,13 @@ ctx.fillText(
   ctx.shadowColor = 'rgba(255,95,109,0.42)';
   ctx.shadowBlur = 50;
 
-  ctx.drawImage(
-    phone,
-    1020,
-    35,
-    260,
-    260
-  );
+ ctx.drawImage(
+  phone,
+  980,
+  18,
+  320,
+  320
+);
 
   ctx.restore();
 
@@ -301,16 +290,16 @@ ctx.stroke();
 
     ctx.fillText(
       s.title,
-      x + 145,
+      x + 125,
       statY + 52
     );
 
     ctx.fillStyle = s.color;
-    ctx.font = 'bold 56px DejaVuSans';
+    ctx.font = 'bold 50px DejaVuSans';
 
     ctx.fillText(
       s.value,
-      x + 120,
+      x + 95,
       statY + 104
     );
   });
