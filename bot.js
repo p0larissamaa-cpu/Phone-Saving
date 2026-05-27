@@ -369,7 +369,7 @@ async function respond(interaction, saved, target, log) {
   const done = pct >= 100 && target > 0;
 
   const embed = new EmbedBuilder()
-    .setColor(done ? 0x66BB6A : 0x2E7D32)
+    .setColor(0xff6478)
     .setImage('attachment://savings.png')
     .setFooter({ text: `Updated just now` })
     .setTimestamp();
