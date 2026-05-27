@@ -72,12 +72,13 @@ async function buildCard(saved, target, log) {
   const done = pct >= 1 && target > 0;
 
   // Background
-  ctx.fillStyle = '#151915';
+  ctx.fillStyle = '#080808';
   ctx.fillRect(0, 0, W, H);
 
-  const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, 700);
-  glow.addColorStop(0, 'rgba(46,125,50,0.25)');
-  glow.addColorStop(1, 'rgba(46,125,50,0)');
+  // Berry glow
+  const glow = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, 1000);
+  glow.addColorStop(0, 'rgba(255,95,109,0.14)');
+  glow.addColorStop(1, 'rgba(255,95,109,0)');
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, W, H);
 
@@ -89,11 +90,11 @@ async function buildCard(saved, target, log) {
   const cr = 28;
 
   roundRect(ctx, cx, cy, cw, ch, cr);
-  ctx.fillStyle = '#1e241e';
+  ctx.fillStyle = 'rgba(10,10,12,0.92)';
   ctx.fill();
 
   roundRect(ctx, cx, cy, cw, ch, cr);
-  ctx.strokeStyle = 'rgba(76,175,80,0.15)';
+  ctx.strokeStyle = 'rgba(255,95,109,0.22)';
   ctx.lineWidth = 2;
   ctx.stroke();
 
@@ -101,28 +102,29 @@ async function buildCard(saved, target, log) {
   roundRect(ctx, cx, cy, cw, 160, cr);
 
   const hgrad = ctx.createLinearGradient(cx, cy, cx + cw, cy);
-  hgrad.addColorStop(0, '#1B5E20');
-  hgrad.addColorStop(1, '#2E7D32');
+  hgrad.addColorStop(0, 'rgba(255,95,109,0.12)');
+  hgrad.addColorStop(1, 'rgba(255,95,109,0.02)');
 
   ctx.fillStyle = hgrad;
   ctx.fill();
 
+  // Title
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 58px DejaVuSans';
-  ctx.fillText('📱 Phone Savings Goal', cx + 45, cy + 78);
+  ctx.fillText('📱 Google Pixel 10a Savings Goal', cx + 45, cy + 78);
 
-  ctx.fillStyle = 'rgba(255,255,255,0.75)';
+  ctx.fillStyle = 'rgba(255,255,255,0.72)';
   ctx.font = '28px DejaVuSans';
   ctx.fillText('Track every rupee you save', cx + 45, cy + 120);
 
   // Percentage
   const percentY = cy + 280;
 
-  ctx.fillStyle = done ? '#66BB6A' : '#ffffff';
+  ctx.fillStyle = '#ff6478';
   ctx.font = 'bold 105px DejaVuSans';
   ctx.fillText(`${pctN}%`, cx + 45, percentY);
 
-  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  ctx.fillStyle = 'rgba(255,255,255,0.68)';
   ctx.font = '30px DejaVuSans';
 
   const subMsg = done
@@ -143,7 +145,7 @@ async function buildCard(saved, target, log) {
   ctx.fill();
 
   roundRect(ctx, barX, barY, barW, barH, barR);
-  ctx.strokeStyle = 'rgba(76,175,80,0.25)';
+  ctx.strokeStyle = 'rgba(255,95,109,0.20)';
   ctx.lineWidth = 2;
   ctx.stroke();
 
@@ -151,13 +153,109 @@ async function buildCard(saved, target, log) {
     const fillW = Math.max(barR * 2, barW * pct);
 
     const fgrad = ctx.createLinearGradient(barX, 0, barX + fillW, 0);
-    fgrad.addColorStop(0, '#2E7D32');
-    fgrad.addColorStop(1, '#66BB6A');
+    fgrad.addColorStop(0, '#ff5f6d');
+    fgrad.addColorStop(1, '#ff7f92');
 
     roundRect(ctx, barX, barY, fillW, barH, barR);
     ctx.fillStyle = fgrad;
     ctx.fill();
   }
+
+  // Stats
+  const stats = [
+    { label: 'SAVED', value: fmt(saved), color: '#8DFF8A' },
+    { label: 'LEFT', value: fmt(left), color: '#FFC05C' },
+    { label: 'GOAL', value: fmt(target), color: '#D47DFF' },
+  ];
+
+  const boxY = barY + 80;
+  const gap = 25;
+  const boxW = (barW - gap * 2) / 3;
+  const boxH = 155;
+
+  stats.forEach((s, i) => {
+    const bx = barX + i * (boxW + gap);
+
+    roundRect(ctx, bx, boxY, boxW, boxH, 22);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.035)';
+    ctx.shadowColor = 'rgba(255,95,109,0.25)';
+    ctx.shadowBlur = 35;
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+
+    roundRect(ctx, bx, boxY, boxW, boxH, 22);
+    ctx.strokeStyle = 'rgba(255,95,109,0.20)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.font = 'bold 22px DejaVuSans';
+    ctx.fillText(s.label, bx + 24, boxY + 40);
+
+    ctx.fillStyle = s.color;
+    ctx.font = 'bold 48px DejaVuSans';
+    ctx.fillText(s.value, bx + 24, boxY + 98);
+  });
+
+  // Recent additions
+  const histX = barX;
+  const histY = boxY + 210;
+
+  ctx.fillStyle = '#ff6478';
+  ctx.font = 'bold 24px DejaVuSans';
+  ctx.fillText('RECENT ADDITIONS', histX, histY);
+
+  const recent = log.slice(0, 4);
+
+  if (recent.length === 0) {
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    ctx.font = '28px DejaVuSans';
+    ctx.fillText('No additions yet', histX, histY + 50);
+  } else {
+    recent.forEach((e, i) => {
+      const iy = histY + 50 + i * 48;
+
+      roundRect(ctx, histX, iy - 28, barW, 38, 12);
+
+      ctx.fillStyle =
+        i % 2 === 0
+          ? 'rgba(255,95,109,0.06)'
+          : 'rgba(255,255,255,0.02)';
+
+      ctx.fill();
+
+      ctx.fillStyle = '#ff6478';
+      ctx.font = 'bold 24px DejaVuSans';
+      ctx.fillText(`+${fmt(e.amt)}`, histX + 18, iy);
+
+      ctx.fillStyle = 'rgba(255,255,255,0.48)';
+      ctx.font = '20px DejaVuSans';
+      ctx.fillText(e.time, histX + 220, iy);
+    });
+  }
+
+  // Footer
+  ctx.strokeStyle = 'rgba(255,95,109,0.16)';
+  ctx.lineWidth = 1;
+
+  ctx.beginPath();
+  ctx.moveTo(cx + 45, H - 85);
+  ctx.lineTo(cx + cw - 45, H - 85);
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(255,255,255,0.32)';
+  ctx.font = '18px DejaVuSans';
+
+  ctx.fillText(
+    'Use /add to log a deposit  •  /set to adjust values  •  /progress to display',
+    cx + 45,
+    H - 50
+  );
+
+  return canvas.toBuffer('image/png');
+}
 
   // Stat boxes
   const stats = [
