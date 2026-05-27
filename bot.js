@@ -132,41 +132,39 @@ async function buildCard(saved, target, log) {
 
   ctx.fillStyle = topGrad;
   ctx.fill();
-
-  // Phone icon box
-  roundRect(ctx, 55, 55, 85, 120, 22);
-
-  ctx.fillStyle = 'rgba(255,95,109,0.08)';
-  ctx.fill();
-
-  ctx.strokeStyle = 'rgba(255,120,140,0.35)';
-  ctx.stroke();
-
-  ctx.font = 'bold 54px DejaVuSans';
-  ctx.fillStyle = '#ff6478';
-  ctx.fillText('📱', 72, 132);
-
-  // Title
+  
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 60px DejaVuSans';
-  ctx.fillText('Google Pixel 10a Savings Goal', 165, 110);
+ctx.font = 'bold 60px DejaVuSans';
 
-  ctx.fillStyle = 'rgba(255,255,255,0.72)';
-  ctx.font = '32px DejaVuSans';
-  ctx.fillText('Track every rupee you save', 168, 160);
+ctx.fillText(
+  'Google Pixel 10a Savings Goal',
+  70,
+  110
+);
+
+ctx.fillStyle = 'rgba(255,255,255,0.72)';
+ctx.font = '32px DejaVuSans';
+
+ctx.fillText(
+  'Track every rupee you save',
+  72,
+  160
+);
+
+
 
   // ── PHONE ──────────────────────────────────
 
   ctx.save();
 
-  ctx.globalAlpha = 0.96;
+  ctx.globalAlpha = 0.88;
 
   ctx.shadowColor = 'rgba(255,95,109,0.42)';
   ctx.shadowBlur = 50;
 
   ctx.drawImage(
     phone,
-    1100,
+    1020,
     35,
     260,
     260
@@ -174,24 +172,6 @@ async function buildCard(saved, target, log) {
 
   ctx.restore();
 
-  // ── PHONE INFO PILL ────────────────────────
-
-  roundRect(ctx, 760, 75, 250, 105, 28);
-
-  ctx.fillStyle = 'rgba(18,18,22,0.78)';
-  ctx.fill();
-
-  ctx.strokeStyle = 'rgba(255,120,140,0.30)';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  ctx.font = 'bold 32px DejaVuSans';
-  ctx.fillStyle = '#ff6478';
-  ctx.fillText('Pixel 10a', 805, 120);
-
-  ctx.font = '28px DejaVuSans';
-  ctx.fillStyle = 'rgba(255,255,255,0.72)';
-  ctx.fillText('Target Phone', 805, 155);
 
   // ── PERCENT ────────────────────────────────
 
@@ -278,7 +258,7 @@ async function buildCard(saved, target, log) {
 
   const statY = 520;
   const statW = 390;
-  const statH = 150;
+  const statH = 165;
   const statGap = 30;
 
   stats.forEach((s, i) => {
@@ -304,13 +284,15 @@ async function buildCard(saved, target, log) {
      ctx.fill();
     
 
-    ctx.strokeStyle = 'rgba(255,255,255,0.22)';
-    ctx.lineWidth = 2;
+    roundRect(ctx, x, statY, statW, statH, 24);
 
-    ctx.shadowColor = s.glow;
-    ctx.shadowBlur = 35;
+ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+ctx.lineWidth = 2;
 
-    ctx.stroke();
+ctx.shadowColor = s.glow;
+ctx.shadowBlur = 35;
+
+ctx.stroke();
 
     ctx.shadowBlur = 0;
     
@@ -319,7 +301,7 @@ async function buildCard(saved, target, log) {
 
     ctx.fillText(
       s.title,
-      x + 165,
+      x + 145,
       statY + 52
     );
 
@@ -328,7 +310,7 @@ async function buildCard(saved, target, log) {
 
     ctx.fillText(
       s.value,
-      x + 165,
+      x + 120,
       statY + 104
     );
   });
