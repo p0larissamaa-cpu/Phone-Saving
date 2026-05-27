@@ -1,6 +1,11 @@
+const { createCanvas, GlobalFonts } = require('@napi-rs/canvas');
+
+GlobalFonts.registerFromPath(
+  './assets/DejaVuSans.ttf',
+  'DejaVuSans'
+);
 const { Client, GatewayIntentBits, EmbedBuilder, REST, Routes, SlashCommandBuilder, AttachmentBuilder } = require('discord.js');
 const { createClient } = require('@supabase/supabase-js');
-const { createCanvas, GlobalFonts } = require('@napi-rs/canvas');
 const path = require('path');
 
 // ── ENV ───────────────────────────────────────────────────────────────────────
@@ -98,21 +103,21 @@ async function buildCard(saved, target, log) {
 
   // Header text
   ctx.fillStyle = '#fff';
-  ctx.font = 'bold 28px DejaVu Sans';
+  ctx.font = 'bold 28px DejaVuSans';
   ctx.fillText('📱  Phone Savings Goal', cx + 28, cy + 42);
   ctx.fillStyle = 'rgba(255,255,255,0.60)';
-  ctx.font = '15px DejaVu Sans';
+  ctx.font = '15px DejaVuSans';
   ctx.fillText('Track every rupee you save', cx + 28, cy + 66);
 
   // ── Percentage headline ────────────────────────────────────────────────────
   const headY = cy + 120;
   ctx.fillStyle = done ? '#66BB6A' : '#e8f5e9';
-  ctx.font = 'bold 54px DejaVu Sans';
+  ctx.font = 'bold 54px DejaVuSans';
   ctx.fillText(`${pctN}%`, cx + 28, headY);
 
   const subMsg = done ? '🎉  Goal reached! Time to get that phone!' : 'saved so far — keep going!';
   ctx.fillStyle = done ? '#81C784' : 'rgba(255,255,255,0.45)';
-  ctx.font = '16px DejaVu Sans';
+  ctx.font = '16px DejaVuSans';
   ctx.fillText(subMsg, cx + 28, headY + 28);
 
   // ── Progress bar ──────────────────────────────────────────────────────────
@@ -157,23 +162,23 @@ async function buildCard(saved, target, log) {
     ctx.lineWidth = 1;
     ctx.stroke();
     ctx.fillStyle = 'rgba(255,255,255,0.38)';
-    ctx.font = 'bold 10px DejaVu Sans';
+    ctx.font = 'bold 10px DejaVuSans';
     ctx.fillText(s.label, bx + 14, boxY + 20);
     ctx.fillStyle = s.color;
-    ctx.font = 'bold 18px DejaVu Sans';
+    ctx.font = 'bold 18px DejaVuSans';
     ctx.fillText(s.value, bx + 14, boxY + 48);
   });
 
   // ── Recent additions ──────────────────────────────────────────────────────
   const histX = barX, histY = boxY + 88;
   ctx.fillStyle = 'rgba(255,255,255,0.28)';
-  ctx.font = 'bold 11px DejaVu Sans';
+  ctx.font = 'bold 11px DejaVuSans';
   ctx.fillText('RECENT ADDITIONS', histX, histY);
 
   const recent = log.slice(0, 4);
   if (recent.length === 0) {
     ctx.fillStyle = 'rgba(255,255,255,0.22)';
-    ctx.font = '14px DejaVu Sans';
+    ctx.font = '14px DejaVuSans';
     ctx.fillText('No additions yet', histX, histY + 24);
   } else {
     recent.forEach((e, i) => {
@@ -182,10 +187,10 @@ async function buildCard(saved, target, log) {
       ctx.fillStyle = i % 2 === 0 ? 'rgba(46,125,50,0.10)' : 'rgba(255,255,255,0.03)';
       ctx.fill();
       ctx.fillStyle = '#66BB6A';
-      ctx.font = 'bold 13px DejaVu Sans';
+      ctx.font = 'bold 13px DejaVuSans';
       ctx.fillText(`+${fmt(e.amt)}`, histX + 12, iy + 4);
       ctx.fillStyle = 'rgba(255,255,255,0.35)';
-      ctx.font = '12px DejaVu Sans';
+      ctx.font = '12px DejaVuSans';
       ctx.fillText(e.time, histX + 120, iy + 4);
     });
   }
@@ -198,7 +203,7 @@ async function buildCard(saved, target, log) {
   ctx.lineTo(cx + cw - 28, H - 56);
   ctx.stroke();
   ctx.fillStyle = 'rgba(255,255,255,0.20)';
-  ctx.font = '11px DejaVu Sans';
+  ctx.font = '11px DejaVuSans';
   ctx.fillText('Use /add to log a deposit  •  /set to adjust values  •  /progress to display', cx + 28, H - 42);
 
   return canvas.toBuffer('image/png');
