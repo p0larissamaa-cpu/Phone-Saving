@@ -198,7 +198,12 @@ ctx.fillText(
   ctx.strokeStyle = 'rgba(255,120,140,0.22)';
   ctx.stroke();
 
-  const fillW = Math.max(40, barW * pct);
+const fillW = Math.max(barH, barW * pct);
+
+  barX + fillW,
+  barX + barW - 22
+);
+const knobY = barY + (barH / 2);
 
   const prog = ctx.createLinearGradient(
     barX,
@@ -213,13 +218,120 @@ ctx.fillText(
 
   roundRect(ctx, barX, barY, fillW, barH, 24);
 
-  ctx.shadowColor = '#ff6478';
-  ctx.shadowBlur = 35;
+ctx.shadowColor = '#ff6478';
+ctx.shadowBlur = 35;
 
-  ctx.fillStyle = prog;
+ctx.fillStyle = prog;
+ctx.fill();
+
+ctx.shadowBlur = 0;
+
+// ── LIVE PROGRESS EFFECT ─────────────────
+
+// markers
+
+ctx.fillStyle = 'rgba(255,255,255,0.42)';
+ctx.font = '24px DejaVuSans';
+
+const markers = ['0%', '25%', '50%', '75%', '100%'];
+
+markers.forEach((m, i) => {
+  const mx = barX + ((barW / 4) * i);
+
+  ctx.beginPath();
+
+  ctx.arc(
+    mx,
+    barY + 78,
+    3,
+    0,
+    Math.PI * 2
+  );
+
   ctx.fill();
 
-  ctx.shadowBlur = 0;
+  ctx.fillText(
+    m,
+    mx - 18,
+    barY + 105
+  );
+});
+
+// glowing knob
+
+ctx.beginPath();
+
+ctx.shadowColor = '#ff6478';
+ctx.shadowBlur = 35;
+
+ctx.fillStyle = '#ff8d9d';
+
+ctx.arc(
+  knobX,
+  knobY,
+  22,
+  0,
+  Math.PI * 2
+);
+
+ctx.fill();
+
+ctx.shadowBlur = 0;
+
+// inner knob
+
+ctx.beginPath();
+
+ctx.fillStyle = '#ffd4da';
+
+ctx.arc(
+  knobX,
+  knobY,
+  11,
+  0,
+  Math.PI * 2
+);
+
+ctx.fill();
+
+// floating percentage bubble
+
+roundRect(
+  ctx,
+  Math.max(barX, knobX - 48),
+  knobY - 105,
+  96,
+  58,
+  16
+);
+
+ctx.fillStyle = 'rgba(18,18,22,0.96)';
+ctx.fill();
+
+ctx.strokeStyle = 'rgba(255,120,140,0.26)';
+ctx.stroke();
+
+ctx.fillStyle = '#ff6478';
+ctx.font = 'bold 30px DejaVuSans';
+
+ctx.fillText(
+  `${pctN}%`,
+  knobX - 28,
+  knobY - 66
+);
+
+// bubble pointer
+
+ctx.beginPath();
+
+ctx.moveTo(knobX - 10, knobY - 47);
+ctx.lineTo(knobX + 10, knobY - 47);
+ctx.lineTo(knobX, knobY - 30);
+
+ctx.closePath();
+
+ctx.fillStyle = 'rgba(18,18,22,0.96)';
+ctx.fill();
 
 
   // ── STAT BOXES ─────────────────────────────
