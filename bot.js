@@ -12,7 +12,7 @@ const SUPABASE_KEY  = process.env.SUPABASE_KEY;
 
 // ── CLIENTS ───────────────────────────────────────────────────────────────────
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-const client   = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client   = new Client({ intents: [GatewayIntentBits.Guilds], presence: { status: 'online' } });
 
 // ── SLASH COMMANDS ─────────────────────────────────────────────────────────────
 const commands = [
@@ -94,7 +94,6 @@ async function buildCard(saved, target, log) {
   hgrad.addColorStop(1, '#2E7D32');
   ctx.fillStyle = hgrad;
   ctx.fill();
-  // square off bottom corners of header
   ctx.fillRect(cx, cy + 68, cw, 20);
 
   // Header text
@@ -119,7 +118,6 @@ async function buildCard(saved, target, log) {
   // ── Progress bar ──────────────────────────────────────────────────────────
   const barX = cx + 28, barY = headY + 52, barW = cw - 56, barH = 26, barR = 13;
 
-  // Track
   roundRect(ctx, barX, barY, barW, barH, barR);
   ctx.fillStyle = '#1a2a1a';
   ctx.fill();
@@ -128,7 +126,6 @@ async function buildCard(saved, target, log) {
   ctx.lineWidth = 1;
   ctx.stroke();
 
-  // Fill
   if (pct > 0) {
     const fillW = Math.max(barR * 2, barW * pct);
     const fgrad = ctx.createLinearGradient(barX, 0, barX + fillW, 0);
@@ -137,8 +134,6 @@ async function buildCard(saved, target, log) {
     roundRect(ctx, barX, barY, fillW, barH, barR);
     ctx.fillStyle = fgrad;
     ctx.fill();
-
-    // Shine
     roundRect(ctx, barX, barY, fillW, barH / 2, barR);
     ctx.fillStyle = 'rgba(255,255,255,0.08)';
     ctx.fill();
@@ -146,9 +141,9 @@ async function buildCard(saved, target, log) {
 
   // ── Stat boxes ────────────────────────────────────────────────────────────
   const stats = [
-    { label: 'SAVED',    value: fmt(saved),  color: '#66BB6A' },
-    { label: 'LEFT',     value: fmt(left),   color: '#EF9A9A' },
-    { label: 'GOAL',     value: fmt(target), color: 'rgba(255,255,255,0.75)' },
+    { label: 'SAVED', value: fmt(saved),  color: '#66BB6A' },
+    { label: 'LEFT',  value: fmt(left),   color: '#EF9A9A' },
+    { label: 'GOAL',  value: fmt(target), color: 'rgba(255,255,255,0.75)' },
   ];
   const boxY = barY + barH + 22;
   const boxW = (barW - 20) / 3;
@@ -161,11 +156,9 @@ async function buildCard(saved, target, log) {
     ctx.strokeStyle = 'rgba(76,175,80,0.12)';
     ctx.lineWidth = 1;
     ctx.stroke();
-
     ctx.fillStyle = 'rgba(255,255,255,0.38)';
     ctx.font = 'bold 10px sans-serif';
     ctx.fillText(s.label, bx + 14, boxY + 20);
-
     ctx.fillStyle = s.color;
     ctx.font = 'bold 18px sans-serif';
     ctx.fillText(s.value, bx + 14, boxY + 48);
@@ -185,17 +178,12 @@ async function buildCard(saved, target, log) {
   } else {
     recent.forEach((e, i) => {
       const iy = histY + 22 + i * 26;
-      const entryX = histX + i * 0; // vertical list
-
-      // pill background
       roundRect(ctx, histX, iy - 14, barW, 22, 8);
       ctx.fillStyle = i % 2 === 0 ? 'rgba(46,125,50,0.10)' : 'rgba(255,255,255,0.03)';
       ctx.fill();
-
       ctx.fillStyle = '#66BB6A';
       ctx.font = 'bold 13px sans-serif';
       ctx.fillText(`+${fmt(e.amt)}`, histX + 12, iy + 4);
-
       ctx.fillStyle = 'rgba(255,255,255,0.35)';
       ctx.font = '12px sans-serif';
       ctx.fillText(e.time, histX + 120, iy + 4);
@@ -209,7 +197,6 @@ async function buildCard(saved, target, log) {
   ctx.moveTo(cx + 28, H - 56);
   ctx.lineTo(cx + cw - 28, H - 56);
   ctx.stroke();
-
   ctx.fillStyle = 'rgba(255,255,255,0.20)';
   ctx.font = '11px sans-serif';
   ctx.fillText('Use /add to log a deposit  •  /set to adjust values  •  /progress to display', cx + 28, H - 42);
@@ -254,7 +241,7 @@ async function registerCommands() {
 }
 
 // ── BOT EVENTS ────────────────────────────────────────────────────────────────
-client.once('ready', async () => {
+client.once('clientReady', async () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
   await registerCommands();
 });
