@@ -200,9 +200,11 @@ ctx.fillText(
 
 const fillW = Math.max(barH, barW * pct);
 
+const knobX = Math.min(
   barX + fillW,
   barX + barW - 22
 );
+
 const knobY = barY + (barH / 2);
 
   const prog = ctx.createLinearGradient(
