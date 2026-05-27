@@ -62,149 +62,190 @@ function roundRect(ctx, x, y, w, h, r) {
 }
 
 async function buildCard(saved, target, log) {
-  const W = 860, H = 480;
+  const W = 1400, H = 850;
   const canvas = createCanvas(W, H);
   const ctx = canvas.getContext('2d');
 
-  const pct  = target > 0 ? Math.min(saved / target, 1) : 0;
+  const pct = target > 0 ? Math.min(saved / target, 1) : 0;
   const pctN = Math.round(pct * 100);
   const left = Math.max(target - saved, 0);
   const done = pct >= 1 && target > 0;
 
-  // ── Background ──────────────────────────────────────────────────────────────
-  ctx.fillStyle = '#1a1f1a';
+  // Background
+  ctx.fillStyle = '#151915';
   ctx.fillRect(0, 0, W, H);
 
-  // Subtle green glow top-left
-  const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, 420);
-  glow.addColorStop(0, 'rgba(46,125,50,0.22)');
+  const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, 700);
+  glow.addColorStop(0, 'rgba(46,125,50,0.25)');
   glow.addColorStop(1, 'rgba(46,125,50,0)');
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, W, H);
 
-  // ── Card ───────────────────────────────────────────────────────────────────
-  const cx = 28, cy = 28, cw = W - 56, ch = H - 56, cr = 22;
+  // Main card
+  const cx = 40;
+  const cy = 40;
+  const cw = W - 80;
+  const ch = H - 80;
+  const cr = 28;
+
   roundRect(ctx, cx, cy, cw, ch, cr);
-  ctx.fillStyle = '#222822';
+  ctx.fillStyle = '#1e241e';
   ctx.fill();
+
   roundRect(ctx, cx, cy, cw, ch, cr);
-  ctx.strokeStyle = 'rgba(76,175,80,0.18)';
-  ctx.lineWidth = 1.5;
+  ctx.strokeStyle = 'rgba(76,175,80,0.15)';
+  ctx.lineWidth = 2;
   ctx.stroke();
 
-  // ── Header band ────────────────────────────────────────────────────────────
-  roundRect(ctx, cx, cy, cw, 88, cr);
+  // Header
+  roundRect(ctx, cx, cy, cw, 160, cr);
+
   const hgrad = ctx.createLinearGradient(cx, cy, cx + cw, cy);
   hgrad.addColorStop(0, '#1B5E20');
   hgrad.addColorStop(1, '#2E7D32');
+
   ctx.fillStyle = hgrad;
   ctx.fill();
-  ctx.fillRect(cx, cy + 68, cw, 20);
 
-  // Header text
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 28px DejaVuSans';
-  ctx.fillText('📱  Phone Savings Goal', cx + 28, cy + 42);
-  ctx.fillStyle = 'rgba(255,255,255,0.60)';
-  ctx.font = '15px DejaVuSans';
-  ctx.fillText('Track every rupee you save', cx + 28, cy + 66);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 58px DejaVuSans';
+  ctx.fillText('📱 Phone Savings Goal', cx + 45, cy + 78);
 
-  // ── Percentage headline ────────────────────────────────────────────────────
-  const headY = cy + 120;
-  ctx.fillStyle = done ? '#66BB6A' : '#e8f5e9';
-  ctx.font = 'bold 54px DejaVuSans';
-  ctx.fillText(`${pctN}%`, cx + 28, headY);
+  ctx.fillStyle = 'rgba(255,255,255,0.75)';
+  ctx.font = '28px DejaVuSans';
+  ctx.fillText('Track every rupee you save', cx + 45, cy + 120);
 
-  const subMsg = done ? '🎉  Goal reached! Time to get that phone!' : 'saved so far — keep going!';
-  ctx.fillStyle = done ? '#81C784' : 'rgba(255,255,255,0.45)';
-  ctx.font = '16px DejaVuSans';
-  ctx.fillText(subMsg, cx + 28, headY + 28);
+  // Percentage
+  const percentY = cy + 280;
 
-  // ── Progress bar ──────────────────────────────────────────────────────────
-  const barX = cx + 28, barY = headY + 52, barW = cw - 56, barH = 26, barR = 13;
+  ctx.fillStyle = done ? '#66BB6A' : '#ffffff';
+  ctx.font = 'bold 105px DejaVuSans';
+  ctx.fillText(`${pctN}%`, cx + 45, percentY);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  ctx.font = '30px DejaVuSans';
+
+  const subMsg = done
+    ? '🎉 Goal reached! Time to buy the phone!'
+    : 'saved so far — keep going!';
+
+  ctx.fillText(subMsg, cx + 50, percentY + 50);
+
+  // Progress bar
+  const barX = cx + 45;
+  const barY = percentY + 90;
+  const barW = cw - 90;
+  const barH = 42;
+  const barR = 21;
 
   roundRect(ctx, barX, barY, barW, barH, barR);
-  ctx.fillStyle = '#1a2a1a';
+  ctx.fillStyle = '#111';
   ctx.fill();
+
   roundRect(ctx, barX, barY, barW, barH, barR);
   ctx.strokeStyle = 'rgba(76,175,80,0.25)';
-  ctx.lineWidth = 1;
+  ctx.lineWidth = 2;
   ctx.stroke();
 
   if (pct > 0) {
     const fillW = Math.max(barR * 2, barW * pct);
+
     const fgrad = ctx.createLinearGradient(barX, 0, barX + fillW, 0);
     fgrad.addColorStop(0, '#2E7D32');
     fgrad.addColorStop(1, '#66BB6A');
+
     roundRect(ctx, barX, barY, fillW, barH, barR);
     ctx.fillStyle = fgrad;
     ctx.fill();
-    roundRect(ctx, barX, barY, fillW, barH / 2, barR);
-    ctx.fillStyle = 'rgba(255,255,255,0.08)';
-    ctx.fill();
   }
 
-  // ── Stat boxes ────────────────────────────────────────────────────────────
+  // Stat boxes
   const stats = [
-    { label: 'SAVED', value: fmt(saved),  color: '#66BB6A' },
-    { label: 'LEFT',  value: fmt(left),   color: '#EF9A9A' },
-    { label: 'GOAL',  value: fmt(target), color: 'rgba(255,255,255,0.75)' },
+    { label: 'SAVED', value: fmt(saved), color: '#66BB6A' },
+    { label: 'LEFT', value: fmt(left), color: '#EF9A9A' },
+    { label: 'GOAL', value: fmt(target), color: '#ffffff' },
   ];
-  const boxY = barY + barH + 22;
-  const boxW = (barW - 20) / 3;
+
+  const boxY = barY + 80;
+  const gap = 25;
+  const boxW = (barW - gap * 2) / 3;
+  const boxH = 155;
+
   stats.forEach((s, i) => {
-    const bx = barX + i * (boxW + 10);
-    roundRect(ctx, bx, boxY, boxW, 68, 12);
+    const bx = barX + i * (boxW + gap);
+
+    roundRect(ctx, bx, boxY, boxW, boxH, 18);
     ctx.fillStyle = 'rgba(255,255,255,0.04)';
     ctx.fill();
-    roundRect(ctx, bx, boxY, boxW, 68, 12);
+
+    roundRect(ctx, bx, boxY, boxW, boxH, 18);
     ctx.strokeStyle = 'rgba(76,175,80,0.12)';
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
     ctx.stroke();
-    ctx.fillStyle = 'rgba(255,255,255,0.38)';
-    ctx.font = 'bold 10px DejaVuSans';
-    ctx.fillText(s.label, bx + 14, boxY + 20);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.40)';
+    ctx.font = 'bold 22px DejaVuSans';
+    ctx.fillText(s.label, bx + 24, boxY + 40);
+
     ctx.fillStyle = s.color;
-    ctx.font = 'bold 18px DejaVuSans';
-    ctx.fillText(s.value, bx + 14, boxY + 48);
+    ctx.font = 'bold 48px DejaVuSans';
+    ctx.fillText(s.value, bx + 24, boxY + 95);
   });
 
-  // ── Recent additions ──────────────────────────────────────────────────────
-  const histX = barX, histY = boxY + 88;
-  ctx.fillStyle = 'rgba(255,255,255,0.28)';
-  ctx.font = 'bold 11px DejaVuSans';
+  // Recent additions
+  const histX = barX;
+  const histY = boxY + 210;
+
+  ctx.fillStyle = 'rgba(255,255,255,0.35)';
+  ctx.font = 'bold 24px DejaVuSans';
   ctx.fillText('RECENT ADDITIONS', histX, histY);
 
   const recent = log.slice(0, 4);
+
   if (recent.length === 0) {
-    ctx.fillStyle = 'rgba(255,255,255,0.22)';
-    ctx.font = '14px DejaVuSans';
-    ctx.fillText('No additions yet', histX, histY + 24);
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    ctx.font = '28px DejaVuSans';
+    ctx.fillText('No additions yet', histX, histY + 50);
   } else {
     recent.forEach((e, i) => {
-      const iy = histY + 22 + i * 26;
-      roundRect(ctx, histX, iy - 14, barW, 22, 8);
-      ctx.fillStyle = i % 2 === 0 ? 'rgba(46,125,50,0.10)' : 'rgba(255,255,255,0.03)';
+      const iy = histY + 50 + i * 48;
+
+      roundRect(ctx, histX, iy - 28, barW, 38, 12);
+
+      ctx.fillStyle =
+        i % 2 === 0
+          ? 'rgba(46,125,50,0.10)'
+          : 'rgba(255,255,255,0.03)';
+
       ctx.fill();
+
       ctx.fillStyle = '#66BB6A';
-      ctx.font = 'bold 13px DejaVuSans';
-      ctx.fillText(`+${fmt(e.amt)}`, histX + 12, iy + 4);
-      ctx.fillStyle = 'rgba(255,255,255,0.35)';
-      ctx.font = '12px DejaVuSans';
-      ctx.fillText(e.time, histX + 120, iy + 4);
+      ctx.font = 'bold 24px DejaVuSans';
+      ctx.fillText(`+${fmt(e.amt)}`, histX + 18, iy);
+
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.font = '20px DejaVuSans';
+      ctx.fillText(e.time, histX + 220, iy);
     });
   }
 
-  // ── Footer line ───────────────────────────────────────────────────────────
-  ctx.strokeStyle = 'rgba(76,175,80,0.10)';
+  // Footer
+  ctx.strokeStyle = 'rgba(76,175,80,0.12)';
   ctx.lineWidth = 1;
+
   ctx.beginPath();
-  ctx.moveTo(cx + 28, H - 56);
-  ctx.lineTo(cx + cw - 28, H - 56);
+  ctx.moveTo(cx + 45, H - 85);
+  ctx.lineTo(cx + cw - 45, H - 85);
   ctx.stroke();
-  ctx.fillStyle = 'rgba(255,255,255,0.20)';
-  ctx.font = '11px DejaVuSans';
-  ctx.fillText('Use /add to log a deposit  •  /set to adjust values  •  /progress to display', cx + 28, H - 42);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.22)';
+  ctx.font = '18px DejaVuSans';
+
+  ctx.fillText(
+    'Use /add to log a deposit  •  /set to adjust values  •  /progress to display',
+    cx + 45,
+    H - 50
+  );
 
   return canvas.toBuffer('image/png');
 }
