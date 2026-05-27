@@ -1,4 +1,4 @@
-const { createCanvas, GlobalFonts } = require('@napi-rs/canvas');
+const { createCanvas, GlobalFonts, loadImage } = require('@napi-rs/canvas');
 
 GlobalFonts.registerFromPath(
   './assets/DejaVuSans.ttf',
@@ -74,13 +74,25 @@ async function buildCard(saved, target, log) {
   // Background
   ctx.fillStyle = '#080808';
   ctx.fillRect(0, 0, W, H);
-
+  const phone = await loadImage('./assets/pixel10a.png');
+  
   // Glow
   const glow = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, 1000);
   glow.addColorStop(0, 'rgba(255,95,109,0.14)');
   glow.addColorStop(1, 'rgba(255,95,109,0)');
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, W, H);
+  ctx.globalAlpha = 0.14;
+
+ctx.drawImage(
+  phone,
+  W - 520,
+  120,
+  420,
+  420
+);
+
+ctx.globalAlpha = 1;
 
   // Card
   const cx = 40;
@@ -177,10 +189,12 @@ async function buildCard(saved, target, log) {
 
     roundRect(ctx, bx, boxY, boxW, boxH, 22);
 
-    ctx.fillStyle = 'rgba(255,255,255,0.035)';
+    ctx.fillStyle = 'rgba(255,255,255,0.06)';
     ctx.shadowColor = 'rgba(255,95,109,0.25)';
     ctx.shadowBlur = 35;
     ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.015)';
+    ctx.fillRect(bx + 2, boxY + 2, boxW - 4, boxH / 2);
 
     ctx.shadowBlur = 0;
 
@@ -188,6 +202,8 @@ async function buildCard(saved, target, log) {
     ctx.strokeStyle = 'rgba(255,95,109,0.20)';
     ctx.lineWidth = 2;
     ctx.stroke();
+    ctx.shadowColor = 'rgba(255,95,109,0.18)';
+    ctx.shadowBlur = 20;
 
     ctx.fillStyle = 'rgba(255,255,255,0.45)';
     ctx.font = 'bold 22px DejaVuSans';
