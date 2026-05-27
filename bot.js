@@ -82,17 +82,7 @@ async function buildCard(saved, target, log) {
   glow.addColorStop(1, 'rgba(255,95,109,0)');
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, W, H);
-  ctx.globalAlpha = 0.14;
-
-ctx.drawImage(
-  phone,
-  W - 520,
-  120,
-  420,
-  420
-);
-
-ctx.globalAlpha = 1;
+  
 
   // Card
   const cx = 40;
@@ -109,6 +99,22 @@ ctx.globalAlpha = 1;
   ctx.strokeStyle = 'rgba(255,95,109,0.22)';
   ctx.lineWidth = 2;
   ctx.stroke();
+  ctx.save();
+
+  ctx.globalAlpha = 0.30;
+
+  ctx.shadowColor = 'rgba(255,95,109,0.35)';
+  ctx.shadowBlur = 45;
+
+  ctx.drawImage(
+  phone,
+  W - 560,
+  140,
+  470,
+  470
+);
+
+ctx.restore();
 
   // Header
   roundRect(ctx, cx, cy, cw, 160, cr);
@@ -189,17 +195,17 @@ ctx.globalAlpha = 1;
 
     roundRect(ctx, bx, boxY, boxW, boxH, 22);
 
-    ctx.fillStyle = 'rgba(255,255,255,0.06)';
+    ctx.fillStyle = 'rgba(255,255,255,0.11)';
     ctx.shadowColor = 'rgba(255,95,109,0.25)';
-    ctx.shadowBlur = 35;
+    ctx.shadowBlur = 45;
     ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,0.015)';
+    ctx.fillStyle = 'rgba(255,255,255,0.045)';
     ctx.fillRect(bx + 2, boxY + 2, boxW - 4, boxH / 2);
 
     ctx.shadowBlur = 0;
 
     roundRect(ctx, bx, boxY, boxW, boxH, 22);
-    ctx.strokeStyle = 'rgba(255,95,109,0.20)';
+    ctx.strokeStyle = 'rgba(255,95,109,0.38)';
     ctx.lineWidth = 2;
     ctx.stroke();
     ctx.shadowColor = 'rgba(255,95,109,0.18)';
