@@ -151,12 +151,12 @@ ctx.fillText(
   ctx.shadowColor = 'rgba(255,95,109,0.42)';
   ctx.shadowBlur = 50;
 
- ctx.drawImage(
+ctx.drawImage(
   phone,
-  980,
-  18,
-  320,
-  320
+  930,
+  -5,
+  380,
+  380
 );
 
   ctx.restore();
