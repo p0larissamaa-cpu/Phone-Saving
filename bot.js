@@ -174,14 +174,6 @@ ctx.fillText(
 
   ctx.shadowBlur = 0;
 
-  ctx.fillStyle = 'rgba(255,255,255,0.72)';
-  ctx.font = '32px DejaVuSans';
-
-  ctx.fillText(
-    'saved so far — keep going!',
-    72,
-    390
-  );
 
   // ── PROGRESS BAR ───────────────────────────
 
