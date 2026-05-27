@@ -62,221 +62,364 @@ function roundRect(ctx, x, y, w, h, r) {
 }
 
 async function buildCard(saved, target, log) {
-  const W = 1400, H = 850;
+  const W = 1400;
+  const H = 850;
+
   const canvas = createCanvas(W, H);
   const ctx = canvas.getContext('2d');
 
   const pct = target > 0 ? Math.min(saved / target, 1) : 0;
   const pctN = Math.round(pct * 100);
   const left = Math.max(target - saved, 0);
-  const done = pct >= 1 && target > 0;
 
-  // Background
-  ctx.fillStyle = '#080808';
-  ctx.fillRect(0, 0, W, H);
   const phone = await loadImage('./assets/pixel10a.png');
-  
-  // Glow
-  const glow = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, 1000);
-  glow.addColorStop(0, 'rgba(255,95,109,0.14)');
+
+  // ── BACKGROUND ─────────────────────────────
+
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#040404');
+  bg.addColorStop(1, '#09090b');
+
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Ambient glow
+  const glow = ctx.createRadialGradient(
+    W * 0.82,
+    H * 0.2,
+    0,
+    W * 0.82,
+    H * 0.2,
+    850
+  );
+
+  glow.addColorStop(0, 'rgba(255,95,109,0.16)');
   glow.addColorStop(1, 'rgba(255,95,109,0)');
+
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, W, H);
-  
 
-  // Card
-  const cx = 40;
-  const cy = 40;
-  const cw = W - 80;
-  const ch = H - 80;
-  const cr = 28;
+  // ── MAIN PANEL ─────────────────────────────
 
-  roundRect(ctx, cx, cy, cw, ch, cr);
-  ctx.fillStyle = 'rgba(10,10,12,0.92)';
+  const panelX = 24;
+  const panelY = 24;
+  const panelW = W - 48;
+  const panelH = H - 48;
+
+  roundRect(ctx, panelX, panelY, panelW, panelH, 28);
+
+  ctx.fillStyle = 'rgba(8,8,10,0.84)';
   ctx.fill();
 
-  roundRect(ctx, cx, cy, cw, ch, cr);
-  ctx.strokeStyle = 'rgba(255,95,109,0.22)';
+  ctx.strokeStyle = 'rgba(255,120,140,0.52)';
   ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.save();
-
-  ctx.globalAlpha = 0.30;
 
   ctx.shadowColor = 'rgba(255,95,109,0.35)';
-  ctx.shadowBlur = 45;
+  ctx.shadowBlur = 35;
 
-  ctx.drawImage(
-  phone,
-  W - 560,
-  140,
-  470,
-  470
-);
+  ctx.stroke();
 
-ctx.restore();
+  ctx.shadowBlur = 0;
 
-  // Header
-  roundRect(ctx, cx, cy, cw, 160, cr);
+  // ── TOP HEADER ─────────────────────────────
 
-  const hgrad = ctx.createLinearGradient(cx, cy, cx + cw, cy);
-  hgrad.addColorStop(0, 'rgba(255,95,109,0.12)');
-  hgrad.addColorStop(1, 'rgba(255,95,109,0.02)');
+  roundRect(ctx, 50, 50, W - 100, 150, 22);
 
-  ctx.fillStyle = hgrad;
+  const topGrad = ctx.createLinearGradient(0, 0, W, 0);
+
+  topGrad.addColorStop(0, 'rgba(255,95,109,0.10)');
+  topGrad.addColorStop(1, 'rgba(255,95,109,0.02)');
+
+  ctx.fillStyle = topGrad;
   ctx.fill();
 
+  // Phone icon box
+  roundRect(ctx, 55, 55, 85, 120, 22);
+
+  ctx.fillStyle = 'rgba(255,95,109,0.08)';
+  ctx.fill();
+
+  ctx.strokeStyle = 'rgba(255,120,140,0.35)';
+  ctx.stroke();
+
+  ctx.font = 'bold 54px DejaVuSans';
+  ctx.fillStyle = '#ff6478';
+  ctx.fillText('📱', 72, 132);
+
+  // Title
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 58px DejaVuSans';
-  ctx.fillText('📱 Google Pixel 10a Savings Goal', cx + 45, cy + 78);
+  ctx.font = 'bold 60px DejaVuSans';
+  ctx.fillText('Google Pixel 10a Savings Goal', 165, 110);
 
   ctx.fillStyle = 'rgba(255,255,255,0.72)';
-  ctx.font = '28px DejaVuSans';
-  ctx.fillText('Track every rupee you save', cx + 45, cy + 120);
+  ctx.font = '32px DejaVuSans';
+  ctx.fillText('Track every rupee you save', 168, 160);
 
-  // Percentage
-  const percentY = cy + 280;
+  // ── PHONE ──────────────────────────────────
 
-  ctx.fillStyle = '#ff6478';
-  ctx.font = 'bold 105px DejaVuSans';
-  ctx.fillText(`${pctN}%`, cx + 45, percentY);
+  ctx.save();
 
-  ctx.fillStyle = 'rgba(255,255,255,0.68)';
-  ctx.font = '30px DejaVuSans';
+  ctx.globalAlpha = 0.96;
 
-  const subMsg = done
-    ? '🎉 Goal reached! Time to buy the phone!'
-    : 'saved so far — keep going!';
+  ctx.shadowColor = 'rgba(255,95,109,0.42)';
+  ctx.shadowBlur = 50;
 
-  ctx.fillText(subMsg, cx + 50, percentY + 50);
+  ctx.drawImage(
+    phone,
+   1040,
+   5,
+   340,
+   540
+  );
 
-  // Progress bar
-  const barX = cx + 45;
-  const barY = percentY + 90;
-  const barW = cw - 90;
-  const barH = 42;
-  const barR = 21;
+  ctx.restore();
 
-  roundRect(ctx, barX, barY, barW, barH, barR);
-  ctx.fillStyle = '#111';
+  // ── PHONE INFO PILL ────────────────────────
+
+  roundRect(ctx, 830, 75, 300, 105, 28);
+
+  ctx.fillStyle = 'rgba(18,18,22,0.78)';
   ctx.fill();
 
-  roundRect(ctx, barX, barY, barW, barH, barR);
-  ctx.strokeStyle = 'rgba(255,95,109,0.20)';
+  ctx.strokeStyle = 'rgba(255,120,140,0.30)';
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  if (pct > 0) {
-    const fillW = Math.max(barR * 2, barW * pct);
+  ctx.font = 'bold 78px DejaVuSans';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText('G', 855, 145);
 
-    const fgrad = ctx.createLinearGradient(barX, 0, barX + fillW, 0);
-    fgrad.addColorStop(0, '#ff5f6d');
-    fgrad.addColorStop(1, '#ff7f92');
+  ctx.font = 'bold 32px DejaVuSans';
+  ctx.fillStyle = '#ff6478';
+  ctx.fillText('Pixel 10a', 930, 120);
 
-    roundRect(ctx, barX, barY, fillW, barH, barR);
-    ctx.fillStyle = fgrad;
-    ctx.fill();
-  }
+  ctx.font = '28px DejaVuSans';
+  ctx.fillStyle = 'rgba(255,255,255,0.72)';
+  ctx.fillText('Target Phone', 930, 155);
 
-  // Stats
-  const stats = [
-    { label: 'SAVED', value: fmt(saved), color: '#8DFF8A' },
-    { label: 'LEFT', value: fmt(left), color: '#FFC05C' },
-    { label: 'GOAL', value: fmt(target), color: '#D47DFF' }
-  ];
-
-  const boxY = barY + 80;
-  const gap = 25;
-  const boxW = (barW - gap * 2) / 3;
-  const boxH = 155;
-
-  stats.forEach((s, i) => {
-    const bx = barX + i * (boxW + gap);
-
-    roundRect(ctx, bx, boxY, boxW, boxH, 22);
-
-    ctx.fillStyle = 'rgba(255,255,255,0.11)';
-    ctx.shadowColor = 'rgba(255,95,109,0.25)';
-    ctx.shadowBlur = 45;
-    ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,0.045)';
-    ctx.fillRect(bx + 2, boxY + 2, boxW - 4, boxH / 2);
-
-    ctx.shadowBlur = 0;
-
-    roundRect(ctx, bx, boxY, boxW, boxH, 22);
-    ctx.strokeStyle = 'rgba(255,95,109,0.38)';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.shadowColor = 'rgba(255,95,109,0.18)';
-    ctx.shadowBlur = 20;
-
-    ctx.fillStyle = 'rgba(255,255,255,0.45)';
-    ctx.font = 'bold 22px DejaVuSans';
-    ctx.fillText(s.label, bx + 24, boxY + 40);
-
-    ctx.fillStyle = s.color;
-    ctx.font = 'bold 48px DejaVuSans';
-    ctx.fillText(s.value, bx + 24, boxY + 98);
-  });
-
-  // Recent additions
-  const histX = barX;
-  const histY = boxY + 210;
+  // ── PERCENT ────────────────────────────────
 
   ctx.fillStyle = '#ff6478';
-  ctx.font = 'bold 24px DejaVuSans';
-  ctx.fillText('RECENT ADDITIONS', histX, histY);
+  ctx.font = 'bold 145px DejaVuSans';
+
+  ctx.shadowColor = 'rgba(255,95,109,0.35)';
+  ctx.shadowBlur = 35;
+
+  ctx.fillText(`${pctN}%`, 70, 335);
+
+  ctx.shadowBlur = 0;
+
+  ctx.fillStyle = 'rgba(255,255,255,0.72)';
+  ctx.font = '32px DejaVuSans';
+
+  ctx.fillText(
+    'saved so far — keep going!',
+    72,
+    390
+  );
+
+  // ── PROGRESS BAR ───────────────────────────
+
+  const barX = 70;
+  const barY = 440;
+  const barW = W - 140;
+  const barH = 48;
+
+  roundRect(ctx, barX, barY, barW, barH, 24);
+
+  ctx.fillStyle = 'rgba(18,18,22,0.96)';
+  ctx.fill();
+
+  ctx.strokeStyle = 'rgba(255,120,140,0.22)';
+  ctx.stroke();
+
+  const fillW = Math.max(40, barW * pct);
+
+  const prog = ctx.createLinearGradient(
+    barX,
+    0,
+    barX + fillW,
+    0
+  );
+
+  prog.addColorStop(0, '#ff5b6e');
+  prog.addColorStop(0.5, '#ff7082');
+  prog.addColorStop(1, '#ff8d9d');
+
+  roundRect(ctx, barX, barY, fillW, barH, 24);
+
+  ctx.shadowColor = '#ff6478';
+  ctx.shadowBlur = 35;
+
+  ctx.fillStyle = prog;
+  ctx.fill();
+
+  ctx.shadowBlur = 0;
+
+  ctx.font = 'bold 34px DejaVuSans';
+  ctx.fillStyle = '#ff6478';
+
+  ctx.fillText(
+    `${pctN}%`,
+    W - 120,
+    475
+  );
+
+  // ── STAT BOXES ─────────────────────────────
+
+  const stats = [
+    {
+      title: 'SAVED',
+      value: fmt(saved),
+      color: '#9BFF7A',
+      glow: 'rgba(155,255,122,0.35)'
+    },
+    {
+      title: 'LEFT',
+      value: fmt(left),
+      color: '#FFBC4D',
+      glow: 'rgba(255,188,77,0.35)'
+    },
+    {
+      title: 'GOAL',
+      value: fmt(target),
+      color: '#D96BFF',
+      glow: 'rgba(217,107,255,0.35)'
+    }
+  ];
+
+  const statY = 520;
+  const statW = 390;
+  const statH = 150;
+  const statGap = 30;
+
+  stats.forEach((s, i) => {
+    const x = 70 + i * (statW + statGap);
+
+    roundRect(ctx, x, statY, statW, statH, 24);
+
+    ctx.fillStyle = 'rgba(14,14,18,0.92)';
+    ctx.fill();
+    roundRect(ctx, x + 2, statY + 2, statW - 4, 58, 22);
+
+    const gloss = ctx.createLinearGradient(
+      0,
+      statY,
+      0,
+      statY + 60
+);
+
+     gloss.addColorStop(0, 'rgba(255,255,255,0.08)');
+     gloss.addColorStop(1, 'rgba(255,255,255,0.01)');
+
+     ctx.fillStyle = gloss;
+     ctx.fill();
+    
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+    ctx.lineWidth = 2;
+
+    ctx.shadowColor = s.glow;
+    ctx.shadowBlur = 35;
+
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+    
+    ctx.fillStyle = 'rgba(255,255,255,0.62)';
+    ctx.font = 'bold 24px DejaVuSans';
+
+    ctx.fillText(
+      s.title,
+      x + 165,
+      statY + 58
+    );
+
+    ctx.fillStyle = s.color;
+    ctx.font = 'bold 56px DejaVuSans';
+
+    ctx.fillText(
+      s.value,
+      x + 165,
+      statY + 112
+    );
+  });
+
+  // ── RECENT ADDITIONS ───────────────────────
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 42px DejaVuSans';
+
+  ctx.fillText(
+    'RECENT ADDITIONS',
+    95,
+    735
+  );
+
+  roundRect(ctx, 70, 755, W - 140, 145, 24);
+
+  ctx.fillStyle = 'rgba(12,12,16,0.88)';
+  ctx.fill();
+
+  ctx.strokeStyle = 'rgba(255,120,140,0.14)';
+  ctx.stroke();
 
   const recent = log.slice(0, 4);
 
   if (recent.length === 0) {
-    ctx.fillStyle = 'rgba(255,255,255,0.25)';
-    ctx.font = '28px DejaVuSans';
-    ctx.fillText('No additions yet', histX, histY + 50);
+    ctx.fillStyle = 'rgba(255,255,255,0.42)';
+    ctx.font = '30px DejaVuSans';
+
+    ctx.fillText(
+      'No additions yet',
+      100,
+      825
+    );
   } else {
     recent.forEach((e, i) => {
-      const iy = histY + 50 + i * 48;
-
-      roundRect(ctx, histX, iy - 28, barW, 38, 12);
-
-      ctx.fillStyle = i % 2 === 0
-        ? 'rgba(255,95,109,0.06)'
-        : 'rgba(255,255,255,0.02)';
-
-      ctx.fill();
+      const y = 805 + i * 42;
 
       ctx.fillStyle = '#ff6478';
-      ctx.font = 'bold 24px DejaVuSans';
-      ctx.fillText(`+${fmt(e.amt)}`, histX + 18, iy);
+      ctx.font = 'bold 28px DejaVuSans';
 
-      ctx.fillStyle = 'rgba(255,255,255,0.48)';
-      ctx.font = '20px DejaVuSans';
-      ctx.fillText(e.time, histX + 220, iy);
+      ctx.fillText(
+        `+${fmt(e.amt)}`,
+        100,
+        y
+      );
+
+      ctx.fillStyle = 'rgba(255,255,255,0.58)';
+      ctx.font = '24px DejaVuSans';
+
+      ctx.fillText(
+        e.time,
+        320,
+        y
+      );
     });
   }
 
-  // Footer
-  ctx.strokeStyle = 'rgba(255,95,109,0.16)';
-  ctx.lineWidth = 1;
+  // ── FOOTER ─────────────────────────────────
 
-  ctx.beginPath();
-  ctx.moveTo(cx + 45, H - 85);
-  ctx.lineTo(cx + cw - 45, H - 85);
+  roundRect(ctx, 40, H - 65, W - 80, 42, 18);
+
+  ctx.fillStyle = 'rgba(18,18,22,0.92)';
+  ctx.fill();
+
+  ctx.strokeStyle = 'rgba(255,120,140,0.12)';
   ctx.stroke();
 
-  ctx.fillStyle = 'rgba(255,255,255,0.32)';
-  ctx.font = '18px DejaVuSans';
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  ctx.font = '20px DejaVuSans';
 
   ctx.fillText(
-    'Use /add to log a deposit  •  /set to adjust values  •  /progress to display',
-    cx + 45,
-    H - 50
+    'Use /add to log a deposit   •   /set to adjust values   •   /progress to display',
+    85,
+    H - 36
   );
 
   return canvas.toBuffer('image/png');
 }
-
 // ── DATA HELPERS ──────────────────────────────────────────────────────────────
 async function getData() {
   const { data, error } = await supabase.from('savings').select('*').eq('id', 1).single();
