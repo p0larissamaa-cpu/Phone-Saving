@@ -166,17 +166,17 @@ async function buildCard(saved, target, log) {
 
   ctx.drawImage(
     phone,
-   1040,
-   5,
-   340,
-   540
+    1100,
+    35,
+    260,
+    260
   );
 
   ctx.restore();
 
   // ── PHONE INFO PILL ────────────────────────
 
-  roundRect(ctx, 830, 75, 300, 105, 28);
+  roundRect(ctx, 760, 75, 250, 105, 28);
 
   ctx.fillStyle = 'rgba(18,18,22,0.78)';
   ctx.fill();
@@ -185,17 +185,13 @@ async function buildCard(saved, target, log) {
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  ctx.font = 'bold 78px DejaVuSans';
-  ctx.fillStyle = '#ffffff';
-  ctx.fillText('G', 855, 145);
-
   ctx.font = 'bold 32px DejaVuSans';
   ctx.fillStyle = '#ff6478';
-  ctx.fillText('Pixel 10a', 930, 120);
+  ctx.fillText('Pixel 10a', 805, 120);
 
   ctx.font = '28px DejaVuSans';
   ctx.fillStyle = 'rgba(255,255,255,0.72)';
-  ctx.fillText('Target Phone', 930, 155);
+  ctx.fillText('Target Phone', 805, 155);
 
   // ── PERCENT ────────────────────────────────
 
@@ -256,14 +252,6 @@ async function buildCard(saved, target, log) {
 
   ctx.shadowBlur = 0;
 
-  ctx.font = 'bold 34px DejaVuSans';
-  ctx.fillStyle = '#ff6478';
-
-  ctx.fillText(
-    `${pctN}%`,
-    W - 120,
-    475
-  );
 
   // ── STAT BOXES ─────────────────────────────
 
@@ -332,7 +320,7 @@ async function buildCard(saved, target, log) {
     ctx.fillText(
       s.title,
       x + 165,
-      statY + 58
+      statY + 52
     );
 
     ctx.fillStyle = s.color;
@@ -341,7 +329,7 @@ async function buildCard(saved, target, log) {
     ctx.fillText(
       s.value,
       x + 165,
-      statY + 112
+      statY + 104
     );
   });
 
@@ -401,7 +389,7 @@ async function buildCard(saved, target, log) {
 
   // ── FOOTER ─────────────────────────────────
 
-  roundRect(ctx, 40, H - 65, W - 80, 42, 18);
+  roundRect(ctx, 40, H - 72, W - 80, 50, 18);
 
   ctx.fillStyle = 'rgba(18,18,22,0.92)';
   ctx.fill();
